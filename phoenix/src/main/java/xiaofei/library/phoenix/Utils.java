@@ -6,6 +6,8 @@ import android.os.Bundle;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 
+import xiaofei.library.phoenix.visitor.BundleVisitor;
+
 
 /**
  * Created by Xiaofei on 16/11/25.
@@ -47,11 +49,18 @@ class Utils {
         return false;
     }
 
-    private static void put(Bundle bundle, String key, Object value) {
-
+    private static void put(Bundle bundle, String key, Class<?> clazz, Object value) {
+        BundleVisitor bundleVisitor = BundleVisitor.BundleVisitorFactory.getBundleVisitor(clazz);
+        if (bundleVisitor != null) {
+            bundleVisitor.put(bundle, key, value);
+        }
     }
 
-    private static Object get(Bundle bundle, String key) {
+    private static Object get(Bundle bundle, String key, Class<?> clazz) {
+        BundleVisitor bundleVisitor = BundleVisitor.BundleVisitorFactory.getBundleVisitor(clazz);
+        if (bundleVisitor != null) {
+            return bundleVisitor.get(bundle, key);
+        }
         return null;
     }
 
@@ -61,7 +70,7 @@ class Utils {
             try {
                 field.setAccessible(true);
                 Object value = field.get(instance);
-                put(savedInstance, getKey(clazz, field), value);
+                put(savedInstance, getKey(clazz, field), field.getType(), value);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -72,7 +81,7 @@ class Utils {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             try {
-                Object value = get(savedInstance, getKey(clazz, field));
+                Object value = get(savedInstance, getKey(clazz, field), field.getType());
                 if (value != null) {
                     field.setAccessible(true);
                     field.set(instance, value);
