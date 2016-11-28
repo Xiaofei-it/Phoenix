@@ -30,4 +30,10 @@ public class SecondActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.v("Eric", "onRestoreInstanceState");
+    }
 }
