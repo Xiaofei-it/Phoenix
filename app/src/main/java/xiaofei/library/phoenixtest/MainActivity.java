@@ -50,6 +50,18 @@ public class MainActivity extends AppCompatActivity {
                         out.value(((Fragment)value).getTag());
                     }
                 })
+                .registerTypeAdapter(Fragment.class,  new TypeAdapter<Object>() {
+                    @Override
+                    public Object read(JsonReader in) throws IOException {
+                        String tag = in.nextString();
+                        return MainActivity.this.getSupportFragmentManager().findFragmentByTag(tag);
+                    }
+
+                    @Override
+                    public void write(JsonWriter out, Object value) throws IOException {
+                        out.value(((Fragment)value).getTag());
+                    }
+                })
 
 //                .registerTypeAdapter(BlankFragment.class, new TypeAdapter<BlankFragment>() {
 //                    @Override
@@ -65,7 +77,11 @@ public class MainActivity extends AppCompatActivity {
 //                })
 //
                 .create();
-        Log.v("Eric", "Fragment = " + gson.toJson(fragment));
+        try {
+            Log.v("Eric", "Fragment = " + gson.toJson(fragment));
+        } catch (RuntimeException e) {
+            Log.e("Eric", "Error", e);
+        }
         //Log.v("Eric", "Activity = " + gson.toJson(this)); // block
         //Log.v("Eric", "Class = " + gson.toJson(MainActivity.class)); // throw an exception:  Forgot to register a type adapter?
 
