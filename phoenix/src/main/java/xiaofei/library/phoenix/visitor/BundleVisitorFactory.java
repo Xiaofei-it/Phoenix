@@ -1,5 +1,6 @@
 package xiaofei.library.phoenix.visitor;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Parcelable;
 
@@ -40,6 +41,9 @@ public class BundleVisitorFactory {
             put(boolean[].class, BooleanArrayBundleVisitor.INSTANCE);
             put(double[].class, DoubleArrayBundleVisitor.INSTANCE);
             put(long[].class, LongArrayBundleVisitor.INSTANCE);
+
+            put(String.class, StringBundleVisitor.INSTANCE);
+            put(String[].class, StringArrayBundleVisitor.INSTANCE);
         }
     };
 
@@ -61,5 +65,15 @@ public class BundleVisitorFactory {
             return CharSequenceBundleVisitor.INSTANCE;
         }
         return MAP.get(clazz);
+    }
+
+    public static BundleVisitor getBundleVisitor(Activity activity, Class<?> clazz) {
+        if (android.app.Fragment.class.isAssignableFrom(clazz)) {
+            return new FragmentBundleVisitor(activity);
+        }
+        if (android.support.v4.app.Fragment.class.isAssignableFrom(clazz)) {
+            return new SupportFragmentBundleVisitor(activity);
+        }
+        return getBundleVisitor(clazz);
     }
 }
