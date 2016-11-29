@@ -73,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
                 .create();
         try {
             Log.v("Eric", "Fragment = " + gson.toJson(fragment));
+            Fragment[] fragments = new Fragment[]{fragment, fragment};
+            Log.v("Eric", "Fragment = " + gson.toJson(fragments));
+            // Read every Fragment!
         } catch (RuntimeException e) {
             Log.e("Eric", "Error", e);
         }

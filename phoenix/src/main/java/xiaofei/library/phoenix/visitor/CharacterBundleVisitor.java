@@ -6,21 +6,21 @@ import android.os.Bundle;
  * Created by Xiaofei on 16/11/25.
  */
 
-class IntegerBundleVisitor implements BundleVisitor {
+class CharacterBundleVisitor implements BundleVisitor {
 
-    static final IntegerBundleVisitor INSTANCE = new IntegerBundleVisitor();
+    static final CharacterBundleVisitor INSTANCE = new CharacterBundleVisitor();
 
-    private IntegerBundleVisitor() {}
+    private CharacterBundleVisitor() {}
 
     @Override
     public void put(Bundle bundle, String key, Object value) {
         if (value != null) {
-            bundle.putInt(key, (Integer) value);
+            bundle.putChar(key, (Character) value);
         }
     }
 
     @Override
     public Object get(Bundle bundle, String key) {
-        return bundle.getInt(key);
+        return bundle.getChar(key);
     }
 }
