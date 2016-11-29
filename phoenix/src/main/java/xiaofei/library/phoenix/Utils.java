@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 
 import xiaofei.library.phoenix.visitor.BundleVisitor;
+import xiaofei.library.phoenix.visitor.BundleVisitorFactory;
 
 
 /**
@@ -50,14 +51,14 @@ class Utils {
     }
 
     private static void put(Bundle bundle, String key, Class<?> clazz, Object value) {
-        BundleVisitor bundleVisitor = BundleVisitor.BundleVisitorFactory.getBundleVisitor(clazz);
+        BundleVisitor bundleVisitor = BundleVisitorFactory.getBundleVisitor(clazz);
         if (bundleVisitor != null) {
             bundleVisitor.put(bundle, key, value);
         }
     }
 
     private static Object get(Bundle bundle, String key, Class<?> clazz) {
-        BundleVisitor bundleVisitor = BundleVisitor.BundleVisitorFactory.getBundleVisitor(clazz);
+        BundleVisitor bundleVisitor = BundleVisitorFactory.getBundleVisitor(clazz);
         if (bundleVisitor != null) {
             return bundleVisitor.get(bundle, key);
         }
