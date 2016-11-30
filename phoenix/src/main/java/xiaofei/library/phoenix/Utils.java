@@ -32,7 +32,7 @@ import xiaofei.library.phoenix.visitor.BundleVisitorFactory;
  * Created by Xiaofei on 16/11/25.
  */
 
-class Utils {
+public class Utils {
 
     private static final HashSet<Class<?>> BASE_CLASSES = new HashSet<Class<?>>() {
         {
@@ -54,6 +54,17 @@ class Utils {
     };
 
     private Utils() {}
+
+    public static <T> T newInstance(Class<T> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     private static String getKey(Class<?> clazz, Field field) {
         return clazz.getName() + "^" + field.getName();
@@ -95,6 +106,13 @@ class Utils {
     static void saveInstance(Class<?> clazz, Object instance, Bundle savedInstance) {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
+            if (field.getType().isAssignableFrom(clazz)) {
+                continue;
+            }
+
+            // linked list should be ignored! Maybe the return value can be used.
+
+            // Need to filter sys?
             try {
                 field.setAccessible(true);
                 Object value = field.get(instance);
