@@ -65,7 +65,7 @@ public class BundleVisitorFactory {
         }
     };
 
-    public static BundleVisitor getBundleVisitor(Class<?> clazz) {
+    private static BundleVisitor getBundleVisitorInternal(Class<?> clazz) {
         BundleVisitor bundleVisitor = MAP.get(clazz);
         if (bundleVisitor != null) {
             return bundleVisitor;
@@ -85,13 +85,18 @@ public class BundleVisitorFactory {
         return MAP.get(clazz);
     }
 
-    public static BundleVisitor getBundleVisitor(Activity activity, Class<?> clazz) {
+    private static BundleVisitor getBundleVisitorForActivity(Activity activity, Class<?> clazz) {
         if (android.app.Fragment.class.isAssignableFrom(clazz)) {
             return new FragmentBundleVisitor(activity);
         }
         if (android.support.v4.app.Fragment.class.isAssignableFrom(clazz)) {
             return new SupportFragmentBundleVisitor(activity);
         }
-        return getBundleVisitor(clazz);
+        return getBundleVisitorInternal(clazz);
+    }
+
+    public static BundleVisitor getBundleVisitor(Object instance, Class<?> clazz) {
+        return instance instanceof Activity ? getBundleVisitorForActivity((Activity) instance, clazz)
+                : getBundleVisitorInternal(clazz);
     }
 }

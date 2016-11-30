@@ -46,6 +46,13 @@ class Utils {
         }
     };
 
+    private static final HashSet<String> BASE_PREFIXES = new HashSet<String>() {
+        {
+            add("android.");
+            add("com.google.");
+        }
+    };
+
     private Utils() {}
 
     private static String getKey(Class<?> clazz, Field field) {
@@ -62,21 +69,23 @@ class Utils {
         if (BASE_CLASSES.contains(clazz)) {
             return true;
         }
-        if (clazz.getName().startsWith("android.")) {
-            return true;
+        for (String prefix : BASE_PREFIXES) {
+            if (clazz.getName().startsWith(prefix)) {
+                return true;
+            }
         }
         return false;
     }
 
-    private static void put(Bundle bundle, String key, Class<?> clazz, Object value) {
-        BundleVisitor bundleVisitor = BundleVisitorFactory.getBundleVisitor(clazz);
+    private static void put(Bundle bundle, String key, Object instance, Class<?> clazz, Object value) {
+        BundleVisitor bundleVisitor = BundleVisitorFactory.getBundleVisitor(instance, clazz);
         if (bundleVisitor != null) {
             bundleVisitor.put(bundle, key, value);
         }
     }
 
-    private static Object get(Bundle bundle, String key, Class<?> clazz) {
-        BundleVisitor bundleVisitor = BundleVisitorFactory.getBundleVisitor(clazz);
+    private static Object get(Bundle bundle, String key, Object instance, Class<?> clazz) {
+        BundleVisitor bundleVisitor = BundleVisitorFactory.getBundleVisitor(instance, clazz);
         if (bundleVisitor != null) {
             return bundleVisitor.get(bundle, key);
         }
@@ -89,7 +98,7 @@ class Utils {
             try {
                 field.setAccessible(true);
                 Object value = field.get(instance);
-                put(savedInstance, getKey(clazz, field), field.getType(), value);
+                put(savedInstance, getKey(clazz, field), instance, field.getType(), value);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -100,11 +109,12 @@ class Utils {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             try {
-                Object value = get(savedInstance, getKey(clazz, field), field.getType());
+                Object value = get(savedInstance, getKey(clazz, field), instance, field.getType());
                 if (value != null) {
                     field.setAccessible(true);
                     field.set(instance, value);
                 }
+
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
