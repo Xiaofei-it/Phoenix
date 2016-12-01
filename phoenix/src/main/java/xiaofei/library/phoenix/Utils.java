@@ -103,11 +103,11 @@ public class Utils {
         return null;
     }
 
-    static void saveInstance(Class<?> clazz, Object instance, Bundle savedInstance) {
+    static boolean saveInstance(Class<?> clazz, Object instance, Bundle savedInstance) {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             if (field.getType().isAssignableFrom(clazz)) {
-                continue;
+                return false;
             }
 
             // linked list should be ignored! Maybe the return value can be used.
@@ -121,9 +121,10 @@ public class Utils {
                 e.printStackTrace();
             }
         }
+        return true;
     }
 
-    static void restoreInstance(Class<?> clazz, Object instance, Bundle savedInstance) {
+    static boolean restoreInstance(Class<?> clazz, Object instance, Bundle savedInstance) {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             try {
@@ -137,5 +138,6 @@ public class Utils {
                 e.printStackTrace();
             }
         }
+        return true;
     }
 }

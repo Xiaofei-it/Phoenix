@@ -18,6 +18,7 @@
 
 package xiaofei.library.phoenix;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 /**
@@ -29,7 +30,12 @@ public class Phoenix {
     public static void saveInstance(Object instance, Bundle savedInstance) {
         Class<?> clazz = instance.getClass();
         while (!Utils.isBaseClass(clazz)) {
-            Utils.saveInstance(clazz, instance, savedInstance);
+            if (!Utils.saveInstance(clazz, instance, savedInstance)) {
+                if (!(instance instanceof Activity)) {
+                    savedInstance.clear();
+                    return;
+                }
+            }
             clazz = clazz.getSuperclass();
         }
     }
